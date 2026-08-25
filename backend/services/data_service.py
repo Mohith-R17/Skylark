@@ -97,13 +97,29 @@ def _auto_select_adapter() -> DataAdapter:
     Select adapter based on environment:
     - If MONDAY_API_TOKEN is set → MondayAdapter
     - If SKYLARK_DEALS_PATH / SKYLARK_WO_PATH are set → ExcelAdapter
+    - Otherwise fallback to local data directory → ExcelAdapter
     - Otherwise → InMemoryAdapter (empty, for dev)
     """
-    if os.getenv("MONDAY_API_TOKEN"):
+    use_mock = str(os.getenv("USE_MOCK_DATA", "false")).lower() == "true"
+    
+    if os.getenv("MONDAY_API_TOKEN") and not use_mock:
         return MondayAdapter()
 
     deals_path = os.getenv("SKYLARK_DEALS_PATH")
     wo_path = os.getenv("SKYLARK_WO_PATH")
+    
+    # Fallback to local data directory
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if not deals_path:
+        local_deals = os.path.join(base_dir, "data", "Deal funnel Data.xlsx")
+        if os.path.exists(local_deals):
+            deals_path = local_deals
+            
+    if not wo_path:
+        local_wo = os.path.join(base_dir, "data", "Work_Order_Tracker Data.xlsx")
+        if os.path.exists(local_wo):
+            wo_path = local_wo
+
     if deals_path or wo_path:
         return ExcelAdapter(deals_path=deals_path, work_orders_path=wo_path)
 
