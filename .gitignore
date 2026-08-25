@@ -1,0 +1,24 @@
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Environment / secrets
+.env
+*.env
+
+# Node
+frontend/node_modules/
+frontend/dist/
+npm-debug.log*
+
+# Build / caches
+.vite/
+*.log
+
+# IDE
+.vscode/
+
+# Submission archive
+skylark_submission.zip
