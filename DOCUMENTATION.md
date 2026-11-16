@@ -3,139 +3,138 @@
 
 ## 🚀 Features
 
-* **Multi-Source Business Intelligence**: Seamlessly ingests business data across multiple source adapters (monday.com, Excel spreadsheets, or local in-memory storage) dynamically selected via environment variables.
-* **AI-Driven Analytics**: Integrates an intelligent query engine enabling natural language analytics for pipeline management, revenue updates, operations metrics, and executive insights.
-* **Real-time Data Reload & Synchronization**: Hot-reloading API endpoints allow background dataset refreshing on-demand without service downtime.
-* **Interactive Executive Dashboard**: React/TypeScript dashboard delivering purpose-built views for Pipeline Overview, Leadership Updates, Data Health Audits, and AI Q&A.
-* **Comprehensive Health & Observability**: Built-in operational monitoring endpoint tracking loaded deals, work orders, system timestamp, and active data source status.
+* **AI-Powered Business Intelligence:** Founder-facing analytics engine delivering pipeline, revenue, and operational insights for Skylark Drones.
+* **Flexible Data Adapters:** Automatic multi-source data ingestion prioritizing monday.com integration, Excel spreadsheet parsing, and in-memory mock data fallback.
+* **Natural Language Queries:** Interactive "Ask Skylark" intelligence assistant backed by a custom AI service.
+* **Data Health & Governance:** Real-time data audit screens and deal validation to ensure report accuracy and consistency.
+* **Automated Leadership Updates:** One-click summary compilation designed for high-level executive updates and cross-board visibility.
 
 ## 📦 Tech Stack
 
-* **Backend**: Python 3.10+, FastAPI, Pydantic, Asyncio, Python-dotenv, Uvicorn
-* **Frontend**: React 18, TypeScript, Vite, Tailwind CSS
-* **Data Layer & Adapters**: REST Integration Services, pandas / openpyxl (Excel parsing), monday.com GraphQL API
-* **State & Data Fetching**: Custom React Hooks with asynchronous API handlers
+* **Backend:** Python 3.10+, FastAPI, Pydantic, Uvicorn, Python-Dotenv
+* **Frontend:** React 18, TypeScript, Vite, Tailwind CSS
+* **Services & Ingestion:** DataService adapter pattern (monday.com API, Excel/Pandas), AIService
 
 ## 📡 API Reference
 
-### System & Health Endpoints
+### Health & Operations
 
-#### Check API Health
-```http
-GET /health
-```
+#### `GET /health`
+Returns system status, active data adapter, and telemetry on loaded entity metrics.
+
 **Response (200 OK):**
 ```json
 {
   "status": "ok",
-  "timestamp": "2026-03-31T12:00:00.000Z",
+  "timestamp": "2026-03-30T12:00:00Z",
   "source": "monday.com",
-  "deals_loaded": 150,
-  "work_orders_loaded": 42
+  "deals_loaded": 142,
+  "work_orders_loaded": 88
 }
 ```
 
-#### Reload Data Engine
-```http
-POST /api/reload
-```
+#### `POST /api/reload`
+Triggers an on-demand re-fetch of data from the configured data source.
+
 **Response (200 OK):**
 ```json
 {
   "status": "reloaded",
-  "deals": 150,
-  "work_orders": 42
+  "deals": 142,
+  "work_orders": 88
 }
 ```
 
 ---
 
-### Core Resource Endpoints
+### Products & Resource Endpoints
 
-#### List Products
-```http
-GET /api/v1/products
-```
-**Response (200 OK):**
-```json
-[
-  {
-    "id": "prod_1001",
-    "name": "Skylark Telemetry Suite",
-    "category": "Analytics",
-    "status": "active"
-  }
-]
-```
+#### `GET /api/v1/products`
+Retrieves a list of available drone hardware, software modules, and service products.
 
-#### Get Product Details
-```http
-GET /api/v1/products/{product_id}
-```
 **Response (200 OK):**
 ```json
 {
-  "id": "prod_1001",
-  "name": "Skylark Telemetry Suite",
-  "category": "Analytics",
-  "status": "active"
+  "products": [
+    {
+      "id": "prod_1001",
+      "name": "Skylark Enterprise Fleet License",
+      "category": "Software",
+      "price": 15000.00
+    },
+    {
+      "id": "prod_1002",
+      "name": "Autonomous Survey Drone Unit",
+      "category": "Hardware",
+      "price": 8500.00
+    }
+  ]
 }
 ```
+
+#### `GET /api/v1/products/{id}`
+Retrieves detailed information for a specific product by ID.
+
 **Response (404 Not Found):**
 ```json
 {
-  "detail": "Product not found"
+  "detail": "Product prod_not_found not found"
 }
 ```
 
-#### Create User
-```http
-POST /api/v1/users
-```
+---
+
+### User Management Endpoints
+
+#### `POST /api/v1/users`
+Creates a new user profile in the system.
+
 **Request Body:**
 ```json
 {
-  "name": "Alex Mercer",
-  "email": "alex@skylarkdrones.com",
+  "name": "Jane Doe",
+  "email": "jane.doe@skylark.com",
   "role": "analyst"
 }
 ```
+
 **Response (201 Created):**
 ```json
 {
   "id": "usr_1001",
-  "name": "Alex Mercer",
-  "email": "alex@skylarkdrones.com",
-  "role": "analyst"
+  "name": "Jane Doe",
+  "email": "jane.doe@skylark.com",
+  "role": "analyst",
+  "created_at": "2026-03-30T12:00:00Z"
 }
 ```
 
-#### Update User
-```http
-PUT /api/v1/users/{user_id}
-```
+#### `PUT /api/v1/users/{id}`
+Updates an existing user's profile details.
+
 **Request Body:**
 ```json
 {
-  "name": "Alex Mercer",
-  "email": "alex@skylarkdrones.com",
-  "role": "admin"
+  "name": "Jane Doe",
+  "email": "jane.doe@skylark.com",
+  "role": "lead_analyst"
 }
 ```
+
 **Response (200 OK):**
 ```json
 {
   "id": "usr_1001",
-  "name": "Alex Mercer",
-  "email": "alex@skylarkdrones.com",
-  "role": "admin"
+  "name": "Jane Doe",
+  "email": "jane.doe@skylark.com",
+  "role": "lead_analyst",
+  "updated_at": "2026-03-30T12:05:00Z"
 }
 ```
 
-#### Delete User
-```http
-DELETE /api/v1/users/{user_id}
-```
+#### `DELETE /api/v1/users/{id}`
+Deletes a user profile by ID.
+
 **Response (200 OK):**
 ```json
 {
@@ -149,8 +148,7 @@ DELETE /api/v1/users/{user_id}
 ### Prerequisites
 
 * Python 3.10 or higher
-* Node.js 18.x or higher
-* npm or pnpm
+* Node.js 18.x or higher and npm (or yarn/pnpm)
 
 ### Installation
 
@@ -162,46 +160,42 @@ DELETE /api/v1/users/{user_id}
 
 2. **Set up the Backend environment:**
    ```bash
-   cd backend
    python -m venv venv
    source venv/bin/activate  # On Windows use: venv\Scripts\activate
    pip install -r requirements.txt
    ```
 
-3. **Configure Environment Variables:**
-   Create a `.env` file inside the `backend` directory:
+3. **Set up environment variables:**
+   Create a `.env` file in the root directory:
    ```env
-   DATA_SOURCE=monday  # Options: monday, excel, inmemory
-   MONDAY_API_KEY=your_monday_api_key_here
-   OPENAI_API_KEY=your_openai_api_key_here
+   MONDAY_API_TOKEN=your_monday_token_here
+   EXCEL_FILE_PATH=data/skylark_bi.xlsx
    ```
 
-4. **Set up Frontend dependencies:**
+4. **Set up the Frontend dependencies:**
    ```bash
-   cd ../frontend
+   cd frontend
    npm install
+   cd ..
    ```
 
 ### Running the App
 
-1. **Start the FastAPI Backend server:**
+1. **Start the API Backend service:**
    ```bash
-   cd backend
-   uvicorn app:app --reload --host 0.0.0.0 --port 8000
+   uvicorn backend.app:app --reload --port 8000
    ```
-   The backend API will be available at `http://localhost:8000`. OpenAPI documentation is available at `http://localhost:8000/docs`.
+   The API will be available at `http://localhost:8000`. You can access interactive Swagger docs at `http://localhost:8000/docs`.
 
-2. **Start the React Frontend development server:**
+2. **Start the Frontend development server:**
    ```bash
    cd frontend
    npm run dev
    ```
-   The frontend UI will be accessible at `http://localhost:5173`.
+   The UI will be accessible at `http://localhost:5173`.
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
